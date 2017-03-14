@@ -55,9 +55,6 @@ public class Record implements Serializable {
 
     @Override
     public String toString() {
-        return "Record{" +
-                "id=" + id +
-                ", name=" + name + '\'' +
-                ", phones=" + phoneList;
+        return String.format("%s %s %s", id, name, phoneList);
     }
 }

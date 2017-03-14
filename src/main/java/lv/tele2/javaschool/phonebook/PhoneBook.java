@@ -46,10 +46,18 @@ public class PhoneBook implements Serializable {
     }
 
     @Command
+    public void generate(int count) {
+        for (int i = 0; i < count; i++) {
+            generate();
+        }
+    }
+
+    @Command
     public void generate() {
         JSONObject obj = callNameFake();
-        System.out.println(obj.getString("name"));
-        System.out.println(obj.getInt("bonus"));
+        String name = obj.getString("name");
+        String phone = obj.getString("phone_h");
+        create(name, phone);
     }
 
     private JSONObject callNameFake() {

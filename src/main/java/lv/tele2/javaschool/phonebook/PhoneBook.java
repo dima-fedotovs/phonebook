@@ -30,4 +30,14 @@ public class PhoneBook implements Serializable {
         return recordList;
     }
 
+    @Command
+    public void remove(int id, String name) {
+        for(Record r : recordList) {
+            if (r.getId() == id && r.getName().equals(name)) {
+                recordList.remove(r);
+                break;
+            }
+        }
+    }
+
 }

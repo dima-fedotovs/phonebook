@@ -1,5 +1,6 @@
 package lv.tele2.javaschool.phonebook;
 
+import java.io.IOException;
 import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.Collections;
@@ -44,6 +45,12 @@ public class Record implements Serializable {
 
     public List<String> getPhoneList() {
         return phoneList;
+    }
+
+    private void readObject(java.io.ObjectInputStream in)
+            throws IOException, ClassNotFoundException {
+        in.defaultReadObject();
+        nextId = Math.max(id + 1, nextId);
     }
 
     @Override

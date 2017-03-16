@@ -7,9 +7,8 @@ import org.json.JSONTokener;
 
 import java.io.IOException;
 import java.io.InputStream;
-import java.io.Serializable;
 import java.net.URL;
-import java.util.ArrayList;
+import java.sql.SQLException;
 import java.util.List;
 
 /**
@@ -17,32 +16,24 @@ import java.util.List;
  * @version 1.0
  * @since 1.0
  */
-public class PhoneBook implements Serializable {
-    private static final long serialVersionUID = 1L;
-
-    private List<Record> recordList = new ArrayList<>();
+public class PhoneBook  {
 
     @Command(abbrev = "c", name = "create", description = "Creates new record")
     public void create(
             @Param(name = "name", description = "Record's name") String name,
             @Param(name = "phone", description = "Phone number") String... phones) {
         Record r = new Record(name, phones);
-        recordList.add(r);
+        r.insert();
     }
 
     @Command(abbrev = "l", name = "list", description = "Lists all records")
-    public List<Record> list() {
-        return recordList;
+    public List<Record> list() throws SQLException {
+        return Record.findAll();
     }
 
     @Command
     public void remove(int id, String name) {
-        for(Record r : recordList) {
-            if (r.getId() == id && r.getName().equals(name)) {
-                recordList.remove(r);
-                break;
-            }
-        }
+        // TODO implement this
     }
 
     @Command

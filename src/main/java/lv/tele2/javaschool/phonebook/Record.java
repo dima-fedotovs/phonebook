@@ -2,6 +2,10 @@ package lv.tele2.javaschool.phonebook;
 
 import java.io.IOException;
 import java.io.Serializable;
+import java.sql.Connection;
+import java.sql.ResultSet;
+import java.sql.SQLException;
+import java.sql.Statement;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
@@ -56,5 +60,45 @@ public class Record implements Serializable {
     @Override
     public String toString() {
         return String.format("%s %s %s", id, name, phoneList);
+    }
+
+    public void insert() {
+        Connection con = Main.getDatabase().getConnection();
+        try (Statement stmt = con.createStatement()) {
+            stmt.executeUpdate("insert into record (id, name) values (" + id + ", '" + name + "')");
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+    }
+
+    public static Record find(int id) throws SQLException {
+        Connection con = Main.getDatabase().getConnection();
+        try (Statement stmt = con.createStatement();
+             ResultSet rs = stmt.executeQuery("select * from record where id = " + id)) {
+            if (rs.next()) {
+                return load(rs);
+            }
+        }
+        return null;
+    }
+
+    public static List<Record> findAll() throws SQLException {
+        List<Record> result = new ArrayList<>();
+        Connection con = Main.getDatabase().getConnection();
+        try (Statement stmt = con.createStatement();
+             ResultSet rs = stmt.executeQuery("select * from record")) {
+            while (rs.next()) {
+                Record r = load(rs);
+                result.add(r);
+            }
+        }
+        return result;
+    }
+
+    private static Record load(ResultSet rs) throws SQLException {
+        Record result = new Record();
+        result.id = rs.getInt("id");
+        result.name = rs.getString("name");
+        return result;
     }
 }

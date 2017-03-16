@@ -10,44 +10,20 @@ import java.io.*;
  * @since 1.0
  */
 public class Main {
+    private static Database database;
+
     public static void main(String[] args) {
-        try {
-            File file = new File("myPhones.ser");
-            PhoneBook phoneBook;
-            if (file.exists()) {
-                phoneBook = readPhoneBook(file);
-            } else {
-                phoneBook = new PhoneBook();
-            }
+        try (Database db = new Database("myphonesdb")) {
+            database = db;
+            PhoneBook phoneBook = new PhoneBook();
             ShellFactory.createConsoleShell("book", null, phoneBook)
                     .commandLoop();
-            savePhoneBook(file, phoneBook);
         } catch (Exception e) {
             e.printStackTrace();
         }
     }
 
-    private static PhoneBook readPhoneBook(File file) {
-        try (
-                FileInputStream fis = new FileInputStream(file);
-                ObjectInputStream ois = new ObjectInputStream(fis)
-        ) {
-            PhoneBook result = (PhoneBook) ois.readObject();
-            return result;
-        } catch (IOException | ClassNotFoundException e) {
-            System.out.println("Error reading. Creating new phone book");
-            return new PhoneBook();
-        }
-    }
-
-    private static void savePhoneBook(File file, PhoneBook phoneBook) {
-        try (
-                FileOutputStream fos = new FileOutputStream(file);
-                ObjectOutputStream oos = new ObjectOutputStream(fos)
-        ) {
-            oos.writeObject(phoneBook);
-        } catch (IOException e) {
-            System.out.println("Error saving file");
-        }
+    public static Database getDatabase() {
+        return database;
     }
 }
